@@ -397,6 +397,7 @@ func (p *Provider) TokenHandler(rw http.ResponseWriter, req *http.Request) {
 		// Validate code challenge according to https://tools.ietf.org/html/rfc7636#section-4.6
 		if tr.CodeVerifier != "" || ar.CodeChallenge != "" {
 			if codeVerifierErr := oidc.ValidateCodeChallenge(ar.CodeChallenge, ar.CodeChallengeMethod, tr.CodeVerifier); codeVerifierErr != nil {
+				p.logger.Errorf("code challenge error: %v, %v, %v", ar.CodeChallenge, ar.CodeChallengeMethod, tr.CodeVerifier)
 				err = konnectoidc.NewOAuth2Error(oidc.ErrorCodeOAuth2InvalidGrant, codeVerifierErr.Error())
 				goto done
 			}
